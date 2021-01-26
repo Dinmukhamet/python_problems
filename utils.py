@@ -1,6 +1,7 @@
 import requests
 import os
 import json
+import sys
 
 from requests.api import head
 
@@ -22,6 +23,13 @@ class ServerManager:
             "email": cls.email,
             "password": cls.password
         }
+        if None in [cls.api_host, cls.email, cls.password]:
+            print("Run of this file has failed.")
+            print("The possible reasons why:")
+            print("1. You've forgot to create .env file with values")
+            print("2. You've forgot to add your values into the file")
+            print("3. The server is not responding")
+            sys.exit(1)
 
         r = requests.post(url=f"{cls.api_host}/token/", json=credentials)
         data = json.loads(r.text)
@@ -43,7 +51,7 @@ class ServerManager:
         data = {
             "problem": int(problem_id),
             "language": 1,
-            "code": "\n".join(file_content)
+            "code": "".join(file_content)
         }
         r = requests.post(url=url, json=data, headers=headers)
         response = json.loads(r.text)
