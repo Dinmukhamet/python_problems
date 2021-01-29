@@ -5,5 +5,9 @@ Suppose, one unit will cost 100.
 Judge and print total cost for user.
 
 Example
-[]
+[In] 9
+[Out] 900
+
+[In] 11
+[Out] 990.0
 """
