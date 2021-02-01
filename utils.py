@@ -14,8 +14,6 @@ class ServerManager:
     api_host = os.environ.get("API_HOST")
     email = os.environ.get("EMAIL")
     password = os.environ.get("PASSWORD")
-    token = None
-    refresh = None
 
     @classmethod
     def obtain_token(cls):
@@ -36,10 +34,17 @@ class ServerManager:
         return data.get('access')
 
     @classmethod
-    def refresh_token(cls):
-        r = requests.post(
-            url=f"{cls.api_host}/token/refresh/", json={"refresh": cls.refresh})
-        cls.token = json.loads(r.text).get('token')
+    def get_results(cls, submission_number):
+        token = cls.obtain_token()
+        headers = {
+            "Authorization": f"Bearer {token}"
+        }
+        r = requests.get(
+            f"{cls.api_host}/submissions/{submission_number}", headers=headers)
+        response = json.loads(r.text)
+        if response.get('status') == 'Pending':
+            return cls.get_results(submission_number)
+        return response
 
     @classmethod
     def send_solution(cls, problem_id, file_content):
@@ -55,8 +60,10 @@ class ServerManager:
         }
         r = requests.post(url=url, json=data, headers=headers)
         response = json.loads(r.text)
-        tests = response.get('tests')
-        if response.get('exitcode') != 0:
+        report = cls.get_results(response.get(
+            'submission_number')).get('report')
+        tests = report.get('tests')
+        if report.get('exitcode') != 0:
             print("------------------------------")
             print(f"Problem #{problem_id}")
             print(f"Outcome: failed")
