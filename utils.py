@@ -59,16 +59,16 @@ class ServerManager:
             "code": "".join(file_content)
         }
         r = requests.post(url=url, json=data, headers=headers)
-        response = json.loads(r.text)
-        report = cls.get_results(response.get(
-            'submission_number')).get('report')
-        tests = report.get('tests')
-        if report.get('exitcode') != 0:
-            print("------------------------------")
-            print(f"Problem #{problem_id}")
-            print(f"Outcome: failed")
-        else:
-            for test in tests:
-                print("------------------------------")
-                print(f"Problem #{problem_id}")
-                print(f"Outcome: {test.get('outcome')}")
+        # response = json.loads(r.text)
+        # report = cls.get_results(response.get(
+        #     'submission_number')).get('report')
+        # tests = report.get('tests')
+        # if report.get('exitcode') != 0:
+        #     print("------------------------------")
+        #     print(f"Problem #{problem_id}")
+        #     print(f"Outcome: failed")
+        # else:
+        #     for test in tests:
+        #         print("------------------------------")
+        #         print(f"Problem #{problem_id}")
+        #         print(f"Outcome: {test.get('outcome')}")
